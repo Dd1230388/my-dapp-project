@@ -4,7 +4,8 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
     height: 100vh;
 }
@@ -19,15 +20,26 @@ body {
     display: flex;
     flex-direction: column;
     border-radius: 10px;
-    height: 100vh;
+    height: calc(100% - 20px);
     justify-content: space-between;
+    margin-top: 20px;
+}
+
+.navbar {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
+    color: black; /* 修改文本颜色 */
+    font-size: 18px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 h1 {
     font-size: 18px;
     color: #333;
     margin: 0;
-    text-align: center;
     padding-top: 10px;
 }
 
